@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roboter Steuern</title>
+    <!--css Dateien-->
+    <link rel="stylesheet" href="style.css" />
+    <!--js Dateien-->
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Steuere deinen eigenen Roboter!</h1>
+      <button id="connectBtn">Mit Roboter verbinden</button>
+      <div id="connectWrapper"><ul id="nearbyDevices"></ul></div>
+
+      <div id="controlWrapper">
+        <div id="controlStopOverlay" class="invisible">
+          <div id="buttonWrapper">
+
+            <button id="play">Steuern fortsetzen</button>
+            <button id="controlSettings">Einstellungen</button>
+            <button id="stop">Steuern beenden</button>
+          </div>
+        </div>
+
+        <div id="controlOverlay">
+          <div id="joystickMove">
+            <canvas id="joystickMoveCanvas">
+            </canvas>
+          </div>
+
+          <div id="joystickTurn">
+            <canvas id="joystickTurnCanvas">
+            </canvas>
+          </div>
+        </div>
+
+        <div id="camVideo">
+          <video src="./Moby Dick - Ishmael im Gasthaus.mp4" muted autoplay loop></video>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
