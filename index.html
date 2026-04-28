@@ -12,28 +12,43 @@
   <body>
     <main>
       <h1>Steuere deinen eigenen Roboter!</h1>
-      <button id="connectBtn">Mit Roboter verbinden</button>
-      <div id="connectWrapper"><ul id="nearbyDevices"></ul></div>
 
-      <div id="controlWrapper">
-        <div id="controlStopOverlay" class="invisible">
+      <div id="controlCard" class="card">
+        <div id="connectOverlay" class="overlay card">
+          <div id="connectMenu">
+            <h2 id="connectStatus">🔴 Nicht Verbunden</h2>
+            <button id="connectBtn">Nach Geräten in der Nähe Suchen</button>
+            <div id="deviceList" class="overlay">
+              <h3>Geräte in der Nähe:</h3>
+              <ul id="nearbyDevices">
+                <li>controler1</li>
+                <li>controler2</li>
+                <li>controler3</li>
+                <li>controler4</li>
+                <li>controler5</li>
+                <li>controler6</li>
+                <li>controler7</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="controlStopOverlay" class="overlay card invisible">
           <div id="buttonWrapper">
-
-            <button id="play">Steuern fortsetzen</button>
+            <button id="play">Fortsetzen</button>
             <button id="controlSettings">Einstellungen</button>
-            <button id="stop">Steuern beenden</button>
+            <button id="changeDevice">Gerät wechseln</button>
+            <button id="disconnectDevice">Beenden</button>
           </div>
         </div>
 
         <div id="controlOverlay">
           <div id="joystickMove">
-            <canvas id="joystickMoveCanvas">
-            </canvas>
+            <canvas id="joystickMoveCanvas"> </canvas>
           </div>
 
           <div id="joystickTurn">
-            <canvas id="joystickTurnCanvas">
-            </canvas>
+            <canvas id="joystickTurnCanvas"> </canvas>
           </div>
         </div>
 
