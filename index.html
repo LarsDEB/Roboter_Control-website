@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Roboter Steuern</title>
-    <!--css Dateien-->
+    <link rel="icon" href="roboFischertechnik.png" />
+    <!--css files-->
     <link rel="stylesheet" href="style.css" />
-    <!--js Dateien-->
+    <!--js files-->
     <script defer src="script.js"></script>
   </head>
   <body>
@@ -14,22 +15,16 @@
       <h1>Steuere deinen eigenen Roboter!</h1>
 
       <div id="controlCard" class="card">
-        <div id="connectOverlay" class="overlay card">
+        <div id="connectOverlay" class="overlay card invisible">
           <div id="connectMenu">
             <h2 id="connectStatus">🔴 Nicht Verbunden</h2>
             <button id="connectBtn">Nach Geräten in der Nähe Suchen</button>
-            <div id="deviceList" class="overlay">
+            <!-- for later use when working with a local server to connect to the controller: -->
+            <!-- <div id="deviceList" class="overlay">
               <h3>Geräte in der Nähe:</h3>
               <ul id="nearbyDevices">
-                <li>controler1</li>
-                <li>controler2</li>
-                <li>controler3</li>
-                <li>controler4</li>
-                <li>controler5</li>
-                <li>controler6</li>
-                <li>controler7</li>
               </ul>
-            </div>
+            </div> -->
           </div>
         </div>
 

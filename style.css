@@ -124,7 +124,7 @@ main {
 }
 
 #deviceList {
-  visibility: visible;
+  visibility: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -193,10 +193,9 @@ main {
 }
 
 #controlOverlay canvas {
-  width: 50%;
+  width: 100%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: var(--knob-bg);
 }
 
 #controlStopOverlay {
