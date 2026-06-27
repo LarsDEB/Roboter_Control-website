@@ -2,17 +2,17 @@ import asyncio
 import websockets
 import json
 
-PORT = 8008
+PORT = 8008;
 
 def move(msData):
     print('moving')
     return True
 
-def stop():
+def stop(msData):
     print('stop')
     return True
 
-def connectMessage():
+def connectMessage(msData):
     print('Client verbunden')
     return True
 
@@ -27,9 +27,9 @@ async def connect(ws):
     try:
         async for message in ws:
             msData = json.loads(message)
-            print('Empfangen:', msData['command'])
+            print('Empfangen:', msData['type'])
  
-            action = commandHandler[msData['command']](msData)
+            action = commandHandler[msData['type']](msData)
             if action != True:
                 await ws.send(json.dumps({'status': 'error'}))
             else:
@@ -39,7 +39,7 @@ async def connect(ws):
         print('Client getrennt')
 
 async def main():
-    async with websockets.serve(connect, "localhost", PORT):
+    async with websockets.serve(connect, "0.0.0.0", PORT ):
         print(f"WebSocket Server läuft auf ws://localhost:{PORT}")
         await asyncio.Future() # runs forever
 

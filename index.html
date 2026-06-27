@@ -15,40 +15,46 @@
       <h1>Steuere deinen eigenen Roboter!</h1>
 
       <div id="controlCard" class="card">
-        <div id="connectOverlay" class="overlay card invisible">
+        <div id="connectOverlay" class="overlay card">
           <div id="connectMenu">
-            <h2 id="connectStatus">🔴 Nicht Verbunden</h2>
-            <button id="connectBtn">Nach Geräten in der Nähe Suchen</button>
-            <!-- for later use when working with a local server to connect to the controller: -->
-            <!-- <div id="deviceList" class="overlay">
-              <h3>Geräte in der Nähe:</h3>
-              <ul id="nearbyDevices">
-              </ul>
-            </div> -->
+            <h2 id="connectStatus" data-ui="status">❌ Nicht Verbunden!</h2>
+            <form id="connectForm" data-ui="form" action="">
+              <label for="ipInput">Gib die IP-Adresse des Controllers ein:</label>
+              <input
+                id="ipInput"
+                data-ui="ipInput"
+                name="controllerIp"
+                type="text"
+                maxlength="12"
+                placeholder="z.B.: 192168451"
+              />
+              <button id="connectBtn" data-ui="connectBtn" type="submit">
+                Controller Verbinden
+              </button>
+            </form>
           </div>
         </div>
 
         <div id="controlStopOverlay" class="overlay card invisible">
           <div id="buttonWrapper">
-            <button id="play">Fortsetzen</button>
-            <button id="controlSettings">Einstellungen</button>
-            <button id="changeDevice">Gerät wechseln</button>
-            <button id="disconnectDevice">Beenden</button>
+            <button id="play" data-ui="play">Fortsetzen</button>
+            <button id="controlSettings" data-ui="settings">Einstellungen</button>
+            <button id="connection" data-ui="connection">Controller Verbinden</button>
           </div>
         </div>
 
-        <div id="controlOverlay">
+        <div id="controlOverlay" class="invisible">
           <div id="joystickMove">
-            <canvas id="joystickMoveCanvas"> </canvas>
+            <canvas id="joystickMoveCanvas" data-ui="move"> </canvas>
           </div>
 
           <div id="joystickTurn">
-            <canvas id="joystickTurnCanvas"> </canvas>
+            <canvas id="joystickTurnCanvas" data-ui="turn"> </canvas>
           </div>
         </div>
 
         <div id="camVideo">
-          <video src="./Moby Dick - Ishmael im Gasthaus.mp4" muted autoplay loop></video>
+          <iframe data-ui="iframe" src="" frameborder="0"></iframe>
         </div>
       </div>
     </main>

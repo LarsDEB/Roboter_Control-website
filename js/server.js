@@ -1,13 +1,36 @@
 import { state } from './state.js';
 
-let ws = null;
+let ws = null; // global websocket variable
+let prevMessage = null; // global variable  to check if the new message is different to the previous message
+
+export function server() {
+  if (state.server.connected && state.controlling) sendControlMessage();
+}
+
+function isValidIPv4(ip) {
+  if (ip === 'localhost') return true;
+
+  const re =
+    /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+  return re.test(ip);
+}
 
 export function connect() {
-  ws = new WebSocket('//localhost8008/control');
+  const ip = state.server.controllerIp;
+  if (!isValidIPv4(ip)) {
+    console.log('incorrectIP');
+    state.overlays.connectOverlay.elements.status.text = 'incorrectIP';
+    return;
+  }
+
+  ws = new WebSocket(`ws://${ip}:8008`);
+  state.overlays.connectOverlay.elements.status.text = 'connecting';
 
   ws.onopen = () => {
-    console.log('Verbunden');
-    ws.send(JSON.stringify({ command: 'connect' }));
+    ws.send(JSON.stringify({ type: 'connect' }));
+    state.server.connected = true;
+    state.overlays.connectOverlay.elements.status.text = 'connected';
   };
 
   ws.onmessage = (event) => {
@@ -15,22 +38,27 @@ export function connect() {
   };
 
   ws.onclose = () => {
+    state.overlays.connectOverlay.elements.status.text = 'disconnected';
+    state.server.connected = false;
     console.log('Verbindung geschlossen');
     ws = null;
   };
 }
 
-export function sendControlMessage() {
-  while (!ws) connect(state.controlWsUrl);
+function sendControlMessage() {
+  const joystickMove = state.joysticks.move.normalized;
+  const joystickturn = state.joysticks.turn.normalized;
 
-  const joystickMove = state.joystickMoveCanvas.normalized;
-  const joystickturn = state.joystickTurnCanvas.normalized;
-
-  const message = {
-    command: 'move',
+  const objekt = {
+    type: 'move',
     move: joystickMove,
     turn: joystickturn,
   };
 
-  ws.send(JSON.stringify(message));
+  const message = JSON.stringify(objekt);
+
+  if (prevMessage !== message) {
+    ws.send(message);
+    prevMessage = message;
+  }
 }

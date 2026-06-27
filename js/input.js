@@ -1,15 +1,30 @@
 import { state } from './state.js';
-import { getJoystickByPointerId } from './joystick.js';
+import { connect } from './server.js';
+
+export function ipInputHandler(event) {
+  event.preventDefault();
+
+  const ipInput = event.target.elements.controllerIp;
+  const ip = ipInput.value.trim();
+
+  if (ip.length > 1) {
+    state.server.controllerIp = ip;
+    ipInput.value = '';
+  } else {
+    state.server.controllerIp = window.location.hostname;
+  }
+
+  connect();
+}
 
 export function pointerDown(event) {
   const canvas = event.target.closest('canvas');
-  const joystick = state[canvas?.id];
+  const joystick = getJoystickByCanvas(canvas);
 
   if (!joystick) return;
 
   joystick.active = true;
   joystick.pointerId = event.pointerId;
-  // setPointerCapture(event.pointerId);
 
   const rect = joystick.canvas.getBoundingClientRect();
 
@@ -47,4 +62,16 @@ export function pointerUp(event) {
   };
 
   joystick.pointerId = null;
+}
+
+function getJoystickByPointerId(pointerId) {
+  const joysticks = Object.values(state.joysticks);
+  const joystick = joysticks.find((e) => {
+    return e.pointerId === pointerId;
+  });
+  return joystick;
+}
+
+function getJoystickByCanvas(canvas) {
+  return Object.values(state.joysticks).find((joystick) => joystick.canvas === canvas);
 }

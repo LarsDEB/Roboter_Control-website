@@ -21,6 +21,10 @@
 }
 
 .invisible {
+  visibility: hidden !important;
+}
+
+.inexisting {
   display: none !important;
 }
 
@@ -105,60 +109,44 @@ main {
 #connectMenu {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: stretch;
   gap: 1rem;
-  width: clamp(50%, fit-content, 90%);
+  width: clamp(30%, fit-content, 90%);
   max-width: 90%;
   padding: 2rem;
   overflow-y: auto;
 }
 
 #connectStatus {
-  letter-spacing: 0.2rem;
+  letter-spacing: 0.1rem;
+}
+
+#connectForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+#ipInput {
+  border-radius: var(--button-radius);
+  border-color: var(--button-bg);
+}
+
+#ipInput:focus {
+  border-radius: var(--button-radius);
+  border-color: var(--button-bg);
+  outline-color: var(--button-bg);
 }
 
 #connectBtn {
   padding: 0.6rem 1rem;
   font-size: 1rem;
+  letter-spacing: 0.04rem;
 }
 
-#deviceList {
-  visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-  width: 100%;
-  padding: 2rem;
-  flex-grow: 1;
-  background: hsla(0, 0%, 100%, 0.05);
-  border-radius: 0.8rem;
-  overflow-y: auto;
-}
-
-#deviceList h3 {
-  letter-spacing: 0.1rem;
-  width: 100%;
-}
-
-#nearbyDevices {
-  padding-left: 1rem;
-  padding-right: 1rem;
-  width: 100%;
-  height: 100%;
-}
-
-#nearbyDevices li {
-  padding: 0.4rem 0.8rem;
-  border-radius: 0.5rem;
-  transition: background 0.2s;
-}
-
-#nearbyDevices li:hover {
-  background: rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-}
 
 #camVideo {
   z-index: 0;
@@ -210,9 +198,9 @@ main {
 
 #buttonWrapper {
   height: fit-content;
-  aspect-ratio: 1;
   min-width: fit-content;
+  width: 40%;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
