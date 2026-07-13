@@ -6,65 +6,97 @@ export function update() {
 }
 
 function updateOverlays() {
+  const prev = {
+    controlling: state.controlling,
+    connected: state.server.connected,
+  };
+
   if (!state.server.connected) {
     state.controlling = false;
-
     state.overlays.connectOverlay.visible = true;
-    state.overlays.connectOverlay.elements.connectBtn.text = 'Controller Verbinden';
-
+    state.overlays.connectOverlay.elements.connectBtn.text = 'Controller verbinden';
     state.overlays.controlStopOverlay.visible = false;
-    state.overlays.controlStopOverlay.elements.connection.text = 'Controller Verbinden';
-
+    state.overlays.controlStopOverlay.elements.connection.text = 'Controller verbinden';
     state.overlays.controlOverlay.visible = false;
-
-  } else if (state.server.connected) {
-    if (state.controlling) return;
-
+  } else if (state.controlling) {
     state.overlays.connectOverlay.visible = false;
     state.overlays.connectOverlay.elements.connectBtn.text = 'Controller trennen';
-
+    state.overlays.controlStopOverlay.visible = false;
+    state.overlays.controlStopOverlay.elements.connection.text = 'Controller trennen';
+    state.overlays.controlOverlay.visible = true;
+  } else {
+    state.overlays.connectOverlay.visible = false;
+    state.overlays.connectOverlay.elements.connectBtn.text = 'Controller trennen';
     state.overlays.controlStopOverlay.visible = true;
     state.overlays.controlStopOverlay.elements.connection.text = 'Controller trennen';
-
     state.overlays.controlOverlay.visible = true;
-    
+  }
+
+  if (prev.controlling !== state.controlling || prev.connected !== state.server.connected) {
+    state.dirty = true;
   }
 }
 
 function updateJoysticks() {
-  const joysticks = Object.values(state.joysticks);
-  joysticks.forEach((joystick) => {
-    updateJoystick(joystick);
-  });
+  Object.values(state.joysticks).forEach(updateJoystick);
 }
 
 function updateJoystick(joystick) {
-  const pointer = joystick.pointer;
-  const center = joystick.center;
+  if (joystick === state.joysticks.move && !joystick.active && joystick.pointerId === null) {
+    const kb = state.keyboard;
 
-  // calc distance to center
-  const dx = pointer.x - center.x;
-  const dy = pointer.y - center.y;
+    const x = (kb.right ? 1 : 0) - (kb.left ? 1 : 0);
+    const y = (kb.down ? 1 : 0) - (kb.up ? 1 : 0);
 
+    if (x !== 0 || y !== 0) {
+      const len = Math.hypot(x, y);
+
+      joystick.normalized.x = x / len;
+      joystick.normalized.y = y / len;
+      joystick.normalized.magnitude = 1;
+
+      joystick.position.x = joystick.center.x + joystick.normalized.x * joystick.maxDist;
+
+      joystick.position.y = joystick.center.y + joystick.normalized.y * joystick.maxDist;
+
+      return;
+    }
+  }
+
+  if (!joystick.active && joystick.pointerId === null) {
+    joystick.position.x = joystick.center.x;
+    joystick.position.y = joystick.center.y;
+    joystick.normalized.x = 0;
+    joystick.normalized.y = 0;
+    joystick.normalized.magnitude = 0;
+    return;
+  }
+
+  if (!joystick.active && joystick.pointerId === null) {
+    joystick.position.x = joystick.center.x;
+    joystick.position.y = joystick.center.y;
+    joystick.normalized.x = 0;
+    joystick.normalized.y = 0;
+    joystick.normalized.magnitude = 0;
+    return;
+  }
+
+  const dx = joystick.pointer.x - joystick.center.x;
+  const dy = joystick.pointer.y - joystick.center.y;
   const dist = Math.hypot(dx, dy);
-
-  // get max distance
-  const max = joystick.maxDist;
+  const max = joystick.maxDist || 1;
 
   let x = dx;
   let y = dy;
 
-  // maintain direction but stay in the joystick
   if (dist > max) {
     x = (dx / dist) * max;
     y = (dy / dist) * max;
   }
 
-  // set new knob position
-  joystick.position.x = center.x + x;
-  joystick.position.y = center.y + y;
+  joystick.position.x = joystick.center.x + x;
+  joystick.position.y = joystick.center.y + y;
 
-  // normalize (-1 to 1) and magnitude (0 to 1 (displays how far away the knob is))
   const normX = x / max;
   const normY = y / max;
 

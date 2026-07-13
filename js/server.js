@@ -1,11 +1,7 @@
 import { state } from './state.js';
 
-let ws = null; // global websocket variable
-let prevMessage = null; // global variable  to check if the new message is different to the previous message
-
-export function server() {
-  if (state.server.connected && state.controlling) sendControlMessage();
-}
+let ws = null;
+let prevMessage = '';
 
 function isValidIPv4(ip) {
   if (ip === 'localhost') return true;
@@ -17,20 +13,25 @@ function isValidIPv4(ip) {
 }
 
 export function connect() {
-  const ip = state.server.controllerIp;
-  if (!isValidIPv4(ip)) {
-    console.log('incorrectIP');
+  const ip = state.server.controllerIp || window.location.hostname;
+
+  if (!isValidIPv4(ip) && ip !== window.location.hostname) {
     state.overlays.connectOverlay.elements.status.text = 'incorrectIP';
+    state.dirty = true;
     return;
   }
 
+  if (ws) ws.close(1000, "reconnect");
+
   ws = new WebSocket(`ws://${ip}:8008`);
   state.overlays.connectOverlay.elements.status.text = 'connecting';
+  state.dirty = true;
 
   ws.onopen = () => {
     ws.send(JSON.stringify({ type: 'connect' }));
     state.server.connected = true;
     state.overlays.connectOverlay.elements.status.text = 'connected';
+    state.dirty = true;
   };
 
   ws.onmessage = (event) => {
@@ -38,24 +39,34 @@ export function connect() {
   };
 
   ws.onclose = () => {
+    console.log("disconnected")
     state.overlays.connectOverlay.elements.status.text = 'disconnected';
     state.server.connected = false;
-    console.log('Verbindung geschlossen');
+    state.controlling = false;
     ws = null;
+    state.dirty = true;
   };
 }
 
-function sendControlMessage() {
-  const joystickMove = state.joysticks.move.normalized;
-  const joystickturn = state.joysticks.turn.normalized;
+export function disconnect() {
+  if (ws) {
+    ws.close(1000, 'User clicked "disconnect"');
+  }
+}
 
-  const objekt = {
+export function server() {
+  if (!state.server.connected || !state.controlling || !ws) return;
+
+  const joystickMove = state.joysticks.move.normalized;
+  const joystickTurn = state.joysticks.turn.normalized;
+
+  const obj = {
     type: 'move',
     move: joystickMove,
-    turn: joystickturn,
+    turn: joystickTurn,
   };
 
-  const message = JSON.stringify(objekt);
+  const message = JSON.stringify(obj);
 
   if (prevMessage !== message) {
     ws.send(message);

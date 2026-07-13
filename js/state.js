@@ -1,32 +1,28 @@
 export const state = {
   controlling: false,
+  dirty: true,
 
   server: {
     connected: false,
-    controllerIp: window.location.hostname,
+    controllerIp: null,
   },
 
   overlays: {
     connectOverlay: {
       visible: true,
-
       element: document.querySelector('#connectOverlay'),
-
       elements: {
         status: {
           element: document.querySelector('#connectStatus'),
           text: '❌ Nicht verbunden',
         },
-
         form: {
           element: document.querySelector('#connectForm'),
         },
-
         ipInput: {
           element: document.querySelector('#ipInput'),
           value: '',
         },
-
         connectBtn: {
           element: document.querySelector('#connectBtn'),
           text: 'Controller verbinden',
@@ -37,9 +33,7 @@ export const state = {
 
     controlOverlay: {
       visible: false,
-
       element: document.querySelector('#controlOverlay'),
-
       elements: {
         moveWrapper: document.querySelector('#joystickMove'),
         turnWrapper: document.querySelector('#joystickTurn'),
@@ -48,20 +42,16 @@ export const state = {
 
     controlStopOverlay: {
       visible: false,
-
       element: document.querySelector('#controlStopOverlay'),
-
       elements: {
         play: {
           element: document.querySelector('#play'),
           text: 'Fortsetzen',
         },
-
         settings: {
           element: document.querySelector('#controlSettings'),
           text: 'Einstellungen',
         },
-
         connection: {
           element: document.querySelector('#connection'),
           text: 'Controller verbinden',
@@ -73,6 +63,13 @@ export const state = {
   joysticks: {
     move: createJoystick(document.querySelector('#joystickMoveCanvas')),
     turn: createJoystick(document.querySelector('#joystickTurnCanvas')),
+  },
+
+  keyboard: {
+    up: false,
+    down: false,
+    left: false,
+    right: false,
   },
 };
 
@@ -91,24 +88,14 @@ function createJoystick(canvas) {
   const knobRadius = canvas.width * 0.25;
 
   return {
-    canvas: canvas,
-    ctx: ctx,
-    knobRadius: knobRadius,
+    canvas,
+    ctx,
+    knobRadius,
     maxDist: canvas.width * 0.5 - knobRadius,
-    center: center,
-    pointer: {
-      x: center.x,
-      y: center.y,
-    },
-    position: {
-      x: center.x,
-      y: center.y,
-    },
-    normalized: {
-      x: 0,
-      y: 0,
-      magnitude: 0,
-    },
+    center,
+    pointer: { x: center.x, y: center.y },
+    position: { x: center.x, y: center.y },
+    normalized: { x: 0, y: 0, magnitude: 0 },
     active: false,
     pointerId: null,
   };
