@@ -29,6 +29,7 @@ export function connect() {
 
   ws.onopen = () => {
     ws.send(JSON.stringify({ type: 'connect' }));
+    console.log("connected")
     state.server.connected = true;
     state.overlays.connectOverlay.elements.status.text = 'connected';
     state.dirty = true;
@@ -55,7 +56,7 @@ export function disconnect() {
 }
 
 export function server() {
-  if (!state.server.connected || !state.controlling || !ws) return;
+  if (!state.server.connected || !ws) return;
 
   const joystickMove = state.joysticks.move.normalized;
   const joystickTurn = state.joysticks.turn.normalized;
